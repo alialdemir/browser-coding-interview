@@ -1,0 +1,11 @@
+.accordion-container {
+  width: 500px;
+  text-align: left;
+  padding-left: 56px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordion-disable {
+  display: none;
+}
