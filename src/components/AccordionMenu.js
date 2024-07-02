@@ -14,7 +14,7 @@ const AccordionMenu = ({ menuItems }) => {
   };
 
   // Recursive function to render menu items and their children
-  const renderItems = (items, parentId) => {
+  const renderItems = (items) => {
     return items.map((item) => {
       const hasChildren = item.children?.length > 0; // Check if the item has children
       const isOpen = openItems[item.id] ?? false; // Check if the item is open
