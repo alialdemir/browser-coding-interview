@@ -2,82 +2,36 @@ import React, { useState } from "react";
 import "./AccordionMenu.css";
 
 const AccordionMenu = ({ menuItems }) => {
-  if (!menuItems || menuItems.length === 0) {
-    return;
-  }
-
-  return menuItems.map((item) => {
-    const hasChildren = item.children?.length > 0;
-    return (
-      <div
-        key={item.id}
-        className={`accordion-container `}
-        // onClick={() => toggleAccordionMenu(item.id)}
-      >
-        {/* {hasChildren ? "▶" : "•"} {item.name} */}
-        {SubItems({
-          children: item,
-          //   isOpen: isOpen,
-        })}
-      </div>
-    );
-  });
-};
-
-const SubItems = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(true); //useState({});
+  const [openItems, setOpenItems] = useState({});
 
   const toggleAccordionMenu = (id) => {
-    // const temp = Object.assign(isOpen, {});
-
-    // temp[id] = !temp[id] ?? true;
-    console.log("on click", !isOpen);
-
-    setIsOpen(!isOpen);
+    setOpenItems((prevOpenItems) => ({
+      ...prevOpenItems,
+      [id]: !prevOpenItems[id],
+    }));
   };
 
-  // debugger
-  //   const [isOpen, setIsOpen] = useState(true);
-  //   if (children?.length === 0 || !isOpen) {
-  //     debugger;
-  //     return;
-  //   }
+  const renderItems = (items) => {
+    return items.map((item) => {
+      const hasChildren = item.children?.length > 0;
+      const isOpen = openItems[item.id] ?? false;
 
-  console.log("SubItems", isOpen);
-  const hasChildren = children?.children?.length > 0;
-  // if (!hasChildren) {
-  //   return (
-  //     <div>
-  //       {hasChildren ? "▶" : "•"} {children?.name}
-  //     </div>
-  //   );
-  // }
+      return (
+        <div key={item.id} className={`accordion-container`}>
+          <div onClick={() => toggleAccordionMenu(item.id)}>
+            {hasChildren ? (isOpen ? "▼" : "▶") : "•"} {item.name}
+          </div>
+          {hasChildren && isOpen && (
+            <div className="accordion-content">
+              {renderItems(item.children, item.id)}
+            </div>
+          )}
+        </div>
+      );
+    });
+  };
 
-  return (
-    <div
-      // key={item.id}
-      className="accordion-container"
-      //   className={`accordion-container  ${isOpen ? "" : "accordion-disable"}`}
-    >
-      <div onClick={() => toggleAccordionMenu(children?.id)}>
-        {hasChildren ? "▶" : "•"} {children?.name}
-      </div>
-
-      {isOpen
-        ? (children?.children || []).map((item) => {
-            return <SubItems children={item}></SubItems>;
-          })
-        : null}
-      {/* {isOpen
-        ? (children?.children || []).map((item) => {
-            return SubItems({
-              children: item,
-              //   isOpen: isOpen, //isOpen[item.id],
-            });
-          })
-        : null} */}
-    </div>
-  );
+  return <div>{renderItems(menuItems)}</div>;
 };
 
 export default AccordionMenu;
